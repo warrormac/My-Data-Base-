@@ -94,6 +94,8 @@ int main()
 {
     string myText;
     
+    
+     //este es el IDLE
     while (true)
     {
         string x;
