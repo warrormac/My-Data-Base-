@@ -6,21 +6,34 @@
 
 using namespace std;
 
-
 string C1 = "CREAR_TABLA";
 string C2 = "INSERTAR";
 string C4 = "SELECT_*_DESDE";
 string C3 = "BORRAR DESDE";
 string C5 = "MODIFICAR";
 
-//declaro la lista
+
 list<string> temp;
 
 
 void removespaceWord(string str)
 {
+    //elimina los "()" al ingresarlos 
+    str.erase(remove(str.begin(), str.end(), '('), str.end());
+    str.erase(remove(str.begin(), str.end(), ')'), str.end());
+
+    //elimina la "," y lo convierte en " "
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (str[i] == ',')
+            str[i] = ' ';
+    }
+
+
+
     istringstream ss(str);
 
+    //ingreso el comando a la lista
     while (ss)
     {
         string word;
@@ -29,7 +42,7 @@ void removespaceWord(string str)
     }
 }
 
-bool fileExists(const std::string& filename)
+/*bool fileExists(const std::string& filename)
 {
     struct stat buf;
     if (stat(filename.c_str(), &buf) != -1)
@@ -37,7 +50,7 @@ bool fileExists(const std::string& filename)
         return true;
     }
     return false;
-}
+}*/
 
 
 void create()
@@ -47,13 +60,13 @@ void create()
     //los CREAR_TABLA "nombre"(...)
 
     bool temp = 0;
-    temp = fileExists("prueba1"); //verifica si ya existe es nombre
+    //temp = fileExists("prueba1"); //verifica si ya existe es nombre
 
-    if (temp == 0);
+    if (temp != 0);
     else {
         string prueba;
 
-        ofstream MyReadFile("prueba1.csv");
+        ofstream MyReadFile("prueba1.txt");
 
         MyReadFile << "probando 1 ";
         // Close the file
@@ -95,12 +108,9 @@ void commands(list<string> x)
 
 }
 
-
 int main()
 {
     string x;
-
-    
 
     while (true)
     {
@@ -114,7 +124,7 @@ int main()
         removespaceWord(x);
         //cout << temp.front();
         commands(temp);
-        
+
         //creo un iterador para poder imprimir la pablabra   **solo para probar (tester)** 
         /*
         list<string>::iterator itr;
@@ -123,7 +133,7 @@ int main()
         */
 
     }
-    
+
 }
 
 
