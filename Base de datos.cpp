@@ -89,7 +89,7 @@ void create()
         }        
         // Close the file
         MyReadFile.close();
-        system("cls");
+        //system("cls");
     }
 }
 
