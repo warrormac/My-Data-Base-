@@ -13,32 +13,25 @@ string C3 = "BORRAR DESDE";
 string C5 = "MODIFICAR";
 
 
-list<string> temp;
+list<string> lista;
 
 
 void removespaceWord(string str)
 {
-    //elimina los "()" al ingresarlos 
-    str.erase(remove(str.begin(), str.end(), '('), str.end());
-    str.erase(remove(str.begin(), str.end(), ')'), str.end());
-
-    //elimina la "," y lo convierte en " "
+    //elimina la ", ) (" y lo convierte en " "
     for (int i = 0; i < str.length(); i++)
     {
-        if (str[i] == ',')
+        if (str[i] == ',' || str[i] == '(' || str[i] == ')')
             str[i] = ' ';
     }
 
-
-
     istringstream ss(str);
-
     //ingreso el comando a la lista
     while (ss)
     {
         string word;
         ss >> word;
-        temp.push_back(word);
+        lista.push_back(word);
     }
 }
 
@@ -56,19 +49,38 @@ void removespaceWord(string str)
 void create()
 {
 
-    //falta ingresar los valores a las tablas osea 
-    //los CREAR_TABLA "nombre"(...)
-
     bool temp = 0;
     //temp = fileExists("prueba1"); //verifica si ya existe es nombre
 
     if (temp != 0);
     else {
+
+        //********************crea el nombre de .txt***********************************
+
         string prueba;
+        list<string> :: iterator it = lista.begin();
 
-        ofstream MyReadFile("prueba1.txt");
+        advance(it, 1);
+        
+        prueba = *it + ".txt";
+        ofstream MyReadFile(prueba.c_str());
 
-        MyReadFile << "probando 1 ";
+
+        cout << "\n\n"<< prueba<<" se creo exitosamente\n\n";
+
+
+
+        //*********************Ingresa las cabezaras de la tabla***********************
+        
+        //"count" tiene que ser 2 porque estamos saltando el comando y el nombre
+        int count = 2;
+        while (count != lista.size()-1)
+        {
+            advance(it, 1);
+            //cout << *it << "\n";
+            MyReadFile << *it <<"\t";
+            count++;
+        }        
         // Close the file
         MyReadFile.close();
     }
@@ -81,7 +93,7 @@ void commands(list<string> x)
     if (C1 == (x.front()))
     {
         create();
-        cout << "crea\n";
+        //cout << "crea\n";
     }
     else if (C2.compare(x.front()) == 0)
     {
@@ -123,18 +135,18 @@ int main()
         //funcion que saca los espacios
         removespaceWord(x);
         //cout << temp.front();
-        commands(temp);
+        commands(lista);
 
+        
         //creo un iterador para poder imprimir la pablabra   **solo para probar (tester)** 
         /*
         list<string>::iterator itr;
-        for (itr = temp.begin(); itr != temp.end(); itr++)
+        for (itr = lista.begin(); itr != lista.end(); itr++)
             cout << *itr << "\n";
         */
 
     }
 
 }
-
 
 
