@@ -35,38 +35,44 @@ void removespaceWord(string str)
     }
 }
 
-/*bool fileExists(const std::string& filename)
+
+bool fileExists()
 {
-    struct stat buf;
-    if (stat(filename.c_str(), &buf) != -1)
-    {
-        return true;
-    }
-    return false;
-}*/
+    string temp;
+    list<string> ::iterator it = lista.begin();
+    advance(it, 1);
+    temp = *it + ".txt";
+
+    ifstream file(temp.c_str(), ios_base::out | ios_base::in);
+    if (!file)
+        return 1;
+    return 0;
+    
+}
+
 
 
 void create()
 {
 
     bool temp = 0;
-    //temp = fileExists("prueba1"); //verifica si ya existe es nombre
+    string prueba;
+    list<string> ::iterator it = lista.begin();
+    advance(it, 1);
 
-    if (temp != 0);
+
+    temp = fileExists(); //verifica si ya existe es nombre
+
+    if (temp == 0)
+        cout<<"YA EXISTE TABLA "<< *it<<"\n\n";
+
     else {
 
-        //********************crea el nombre de .txt***********************************
-
-        string prueba;
-        list<string> :: iterator it = lista.begin();
-
-        advance(it, 1);
-        
+        //********************crea el nombre de .txt***********************************       
         prueba = *it + ".txt";
         ofstream MyReadFile(prueba.c_str());
 
-
-        cout << "\n\n"<< prueba<<" se creo exitosamente\n\n";
+        cout << "\n\nLA TABLA "<< prueba<<" SE CREO EXISTOSAMENTE\n\n";
 
 
 
@@ -83,6 +89,7 @@ void create()
         }        
         // Close the file
         MyReadFile.close();
+        system("cls");
     }
 }
 
@@ -138,6 +145,10 @@ int main()
         commands(lista);
 
         
+        lista.clear();
+        //system("cls");
+        
+        
         //creo un iterador para poder imprimir la pablabra   **solo para probar (tester)** 
         /*
         list<string>::iterator itr;
@@ -148,5 +159,3 @@ int main()
     }
 
 }
-
-
