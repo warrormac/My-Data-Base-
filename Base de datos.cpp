@@ -12,16 +12,19 @@ string C4 = "SELECT_*_DESDE";
 string C3 = "BORRAR DESDE";
 string C5 = "MODIFICAR";
 
+string tipo1 = "int";
+string tipo2 = "char";
+string tipo3 = "date";
 
 list<string> lista;
-
+list<string> type;
 
 void removespaceWord(string str)
 {
     //elimina la ", ) (" y lo convierte en " "
     for (int i = 0; i < str.length(); i++)
     {
-        if (str[i] == ',' || str[i] == '(' || str[i] == ')')
+        if (str[i] == ',' || str[i] == '(' || str[i] == ')' || str[i] == '-')
             str[i] = ' ';
     }
 
@@ -52,12 +55,14 @@ bool fileExists()
 
 
 
+
 void create()
 {
 
     bool temp = 0;
     string prueba;
     list<string> ::iterator it = lista.begin();
+    list<string> ::iterator its = type.begin();
     advance(it, 1);
 
 
@@ -80,19 +85,53 @@ void create()
         
         //"count" tiene que ser 2 porque estamos saltando el comando y el nombre
         int count = 2;
-        while (count != lista.size()-1)
+        
+        for (its = type.begin(); its != type.end(); its++)
         {
             advance(it, 1);
-            //cout << *it << "\n";
-            MyReadFile << *it <<"\t";
-            count++;
-        }        
+            MyReadFile << *it + " (" + *its + ") " << "\t";
+        }
+            
         // Close the file
         MyReadFile.close();
         //system("cls");
     }
 }
 
+void tipos()
+{
+    int flag = 0;
+    list<string> temp;
+    list<string>::iterator itrr;
+    for (itrr = lista.begin(); itrr != lista.end(); itrr++)
+    {
+        if (*itrr == tipo1) 
+        {
+            type.push_back(tipo1);
+            flag++;
+            temp.push_back(tipo1);
+        }
+        else if (*itrr == tipo2)
+        {
+            type.push_back(tipo2);
+            flag++;
+            temp.push_back(tipo2);
+        }
+        else if (*itrr == tipo3)
+        {
+            type.push_back(tipo3);
+            flag++;
+            temp.push_back(tipo3);
+        }
+            
+    }
+    if (flag==0)
+        cout << "SYNTAX_ERROR: COMAND NOT FOUND";
+    for (itrr = temp.begin(); itrr != temp.end(); itrr++)
+    lista.remove(*itrr);
+    temp.clear();
+
+}
 
 void commands(list<string> x)
 {
@@ -141,20 +180,28 @@ int main()
 
         //funcion que saca los espacios
         removespaceWord(x);
+        tipos();
         //cout << temp.front();
         commands(lista);
 
         
+        //creo un iterador para poder imprimir la pablabra   **solo para probar (tester)**
+/*
+        list<string>::iterator itr;
+        list<string>::iterator itrs;
+        cout << "lista de lista\n";
+        for (itr = lista.begin(); itr != lista.end(); itr++)
+            cout << *itr << "\n";
+
+        cout << "lista de type\n";
+        for (itrs = type.begin(); itrs != type.end(); itrs++)
+            cout << *itrs << "\n";
+*/       
         lista.clear();
+        type.clear();
         //system("cls");
         
         
-        //creo un iterador para poder imprimir la pablabra   **solo para probar (tester)** 
-        /*
-        list<string>::iterator itr;
-        for (itr = lista.begin(); itr != lista.end(); itr++)
-            cout << *itr << "\n";
-        */
 
     }
 
