@@ -1,8 +1,10 @@
-#include <iostream>
+#include<iostream>
+#include<string>
+#include<fstream>
+#include <iomanip> 
 #include <list>
-#include <string>
 #include <sstream>
-#include <fstream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -16,8 +18,16 @@ string tipo1 = "int";
 string tipo2 = "char";
 string tipo3 = "date";
 
+string dataInt = "int";
+string dataFloat = "float";
+string dataChar = "char";
+string dataDate = "date";
+
 list<string> lista;
 list<string> type;
+list<string> datos;
+list<string> ingresar;
+list<string> temporal;
 
 void removespaceWord(string str)
 {
@@ -50,9 +60,8 @@ bool fileExists()
     if (!file)
         return 1;
     return 0;
-    
-}
 
+}
 
 
 
@@ -69,7 +78,7 @@ void create()
     temp = fileExists(); //verifica si ya existe es nombre
 
     if (temp == 0)
-        cout<<"YA EXISTE TABLA "<< *it<<"\n\n";
+        cout << "YA EXISTE TABLA " << *it << "\n\n";
 
     else {
 
@@ -77,21 +86,21 @@ void create()
         prueba = *it + ".txt";
         ofstream MyReadFile(prueba.c_str());
 
-        cout << "\n\nLA TABLA "<< prueba<<" SE CREO EXISTOSAMENTE\n\n";
+        cout << "\n\nLA TABLA " << prueba << " SE CREO EXISTOSAMENTE\n\n";
 
 
 
         //*********************Ingresa las cabezaras de la tabla***********************
-        
+
         //"count" tiene que ser 2 porque estamos saltando el comando y el nombre
         int count = 2;
-        
+
         for (its = type.begin(); its != type.end(); its++)
         {
             advance(it, 1);
-            MyReadFile << *it + " (" + *its + ") " << "\t";
+            MyReadFile << *it + " (" + *its +")"<< "\t";
         }
-            
+
         // Close the file
         MyReadFile.close();
         //system("cls");
@@ -105,7 +114,7 @@ void tipos()
     list<string>::iterator itrr;
     for (itrr = lista.begin(); itrr != lista.end(); itrr++)
     {
-        if (*itrr == tipo1) 
+        if (*itrr == tipo1)
         {
             type.push_back(tipo1);
             flag++;
@@ -123,14 +132,153 @@ void tipos()
             flag++;
             temp.push_back(tipo3);
         }
-            
+
     }
-    if (flag==0)
+    if (flag == 0)
         cout << "SYNTAX_ERROR: COMAND NOT FOUND";
     for (itrr = temp.begin(); itrr != temp.end(); itrr++)
-    lista.remove(*itrr);
+        lista.remove(*itrr);
     temp.clear();
 
+}
+
+
+void pull_data()
+{
+    cout << "\mim in\n";
+    int count = 0;
+    string prueba, temp;
+    list<string> ::iterator it = lista.begin();
+    advance(it, 1);
+    prueba = *it + ".txt";
+    fstream MyReadFile(prueba.c_str());
+
+    while (MyReadFile >> temp)
+    {
+        datos.push_back(temp);
+
+    }
+
+
+
+    /*
+    list<string> ::iterator itrs;
+    for (itrs = datos.begin(); itrs != datos.end(); itrs++)
+        cout << *itrs << "\n";
+      */
+
+
+}
+
+template <typename T>
+string convert(string l)
+{
+    stringstream geek(l);
+    T x = 0;
+    geek >> x;
+
+    ostringstream str1;
+    str1 << x;
+    return str1.str();
+
+
+}
+
+int rows()
+{
+    string prueba;
+    list<string> ::iterator it = lista.begin();
+    advance(it, 1);
+    prueba = *it + ".txt";
+
+    int number_of_lines = 0;
+    string line;
+    ifstream myfile(prueba);
+
+    while (getline(myfile, line))
+        ++number_of_lines;
+    return number_of_lines;
+
+}
+
+void insertar()
+{
+    bool temp = 0;
+    int filas = 0;
+    string prueba;
+
+    list<string> ::iterator it = lista.begin();
+
+
+    temp = fileExists(); //verifica si ya existe es nombre
+    list<string> ::iterator dat = datos.begin();
+    if (temp == 0)
+    {
+        pull_data(); //saco los tipo delcarados al crear una tabla
+
+
+
+        //**********************************casteo los numero sino solo ingreso los string a una nueva lista*******************
+        int temp = 2;
+        int temp2 = 1;
+        while (temp < lista.size() - 1)
+        {
+            list<string> ::iterator it = lista.begin();
+            list<string> ::iterator dat = datos.begin();
+            it = lista.begin();
+            advance(it, temp);
+            advance(dat, temp2);
+            temporal.push_back(*it);
+            //cout << "lista datos " << *dat << " lista lista " << *it << "\n";
+            if (*dat == "(float)" || *dat == "(int)")
+            {
+                ingresar.push_back(convert<double>(*it));
+                
+
+
+            }
+            else {
+                ingresar.push_back(*it);
+            }
+
+            temp++;
+            temp2 += 2;
+            list<string>::iterator itrs;
+            cout << "lista de ingresar\n";
+            for (itrs = ingresar.begin(); itrs != ingresar.end(); itrs++)
+                cout << *itrs << "\n";
+        }
+        //**************************************ingrese los nuevos valores a la lista ingresar************************
+        //cout << "\nvoy a buscar las filas\n";
+        filas = rows();
+
+
+        //*************************************ingresar los datos a la tabla******************************************
+        list<string> ::iterator it = lista.begin();
+        list<string> ::iterator itrs = temporal.begin();
+        cout << "lista de temporal\n";
+        for (itrs = temporal.begin(); itrs != temporal.end(); itrs++)
+            cout << *itrs << "\n";
+
+
+        advance(it, 1);
+        prueba = *it + ".txt";
+        ofstream MyReadFile;
+        MyReadFile.open(prueba, std::ios_base::app); // append instead of overwrite
+        int count = 0;
+        while (count < ingresar.size())
+        {
+            list<string> ::iterator it = ingresar.begin();
+            advance(it, count);
+            if(count==0)
+                MyReadFile <<"\n"<< *it << "\t";
+            else MyReadFile << *it <<"\t";
+            count++;
+        }
+        //**********************************respeta la lo escrito*****************************************************
+
+
+    }
 }
 
 void commands(list<string> x)
@@ -141,22 +289,22 @@ void commands(list<string> x)
         create();
         //cout << "crea\n";
     }
-    else if (C2.compare(x.front()) == 0)
+    if (C2 == (x.front()))
     {
-        //create();
+        insertar();
         cout << "insert\n";
     }
-    else if (C3.compare(x.front()) == 0)
+    if (C3.compare(x.front()) == 0)
     {
         //create();
         cout << "del\n";
     }
-    else if (C4.compare(x.front()) == 0)
+    if (C4.compare(x.front()) == 0)
     {
         //create();
         cout << "select\n";
     }
-    else if (C5.compare(x.front()) == 0)
+    if (C5.compare(x.front()) == 0)
     {
         //create();
         cout << "mod\n";
@@ -165,6 +313,9 @@ void commands(list<string> x)
 
 
 }
+
+
+
 
 int main()
 {
@@ -184,24 +335,23 @@ int main()
         //cout << temp.front();
         commands(lista);
 
-        
+
         //creo un iterador para poder imprimir la pablabra   **solo para probar (tester)**
-/*
-        list<string>::iterator itr;
+
+       /* list<string>::iterator itr;
         list<string>::iterator itrs;
         cout << "lista de lista\n";
         for (itr = lista.begin(); itr != lista.end(); itr++)
             cout << *itr << "\n";
-
         cout << "lista de type\n";
-        for (itrs = type.begin(); itrs != type.end(); itrs++)
+        for (itrs = datos.begin(); itrs != datos.end(); itrs++)
             cout << *itrs << "\n";
-*/       
+        */
         lista.clear();
         type.clear();
         //system("cls");
-        
-        
+
+
 
     }
 
