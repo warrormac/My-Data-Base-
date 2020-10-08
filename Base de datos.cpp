@@ -5,13 +5,17 @@
 #include <list>
 #include <sstream>
 #include <stdlib.h>
+#include <algorithm>
+
+
+
 
 using namespace std;
 
 string C1 = "CREAR_TABLA";
 string C2 = "INSERTAR";
 string C4 = "SELECT_*_DESDE";
-string C3 = "BORRAR DESDE";
+string C3 = "BORRAR";
 string C5 = "MODIFICAR";
 
 string tipo1 = "int";
@@ -28,6 +32,7 @@ list<string> type;
 list<string> datos;
 list<string> ingresar;
 list<string> temporal;
+
 
 void removespaceWord(string str)
 {
@@ -281,6 +286,103 @@ void insertar()
     }
 }
 
+void elim()
+{
+    fstream file;
+    string word, t, q, filename;
+    list<string> ::iterator it = lista.begin();
+    advance(it, 1);
+
+    filename = *it + ".txt";
+    q = filename;
+    file.open(filename.c_str());
+
+    //extrae las palabras
+    /*while (file >> word)
+    {
+        // displaying content
+        ingresar.push_back(word);
+    }*/
+    //****************Saco el id y la palabra**********
+    it = lista.begin();
+    advance(it, 2);
+    string ID = *it;
+
+    //*******************test**************
+    list<string>::iterator itrs;
+    cout << "TEST\n";
+    for (itrs = ingresar.begin(); itrs != ingresar.end(); itrs++)
+        cout << *itrs << "\n";
+    //*******************End of test************
+
+
+
+
+    //*******************convierto id ingresado a int*********
+    stringstream geek(ID);
+    int x = 0;
+    geek >> x;
+
+
+
+
+    if (x == 0)
+    {
+        std::ofstream ofs;
+        ofs.open(filename, std::ofstream::out | std::ofstream::trunc);
+        ofs.close();
+    }
+    if (x > 0)
+    {
+        ofstream MyReadFile(filename.c_str());
+        int tam = ingresar.size() - 1;
+        tam = tam / 2;
+        int tamf = tam / 2;
+        int count = 0, count2 = 0, id = 0;
+
+
+        list<string> ::iterator its = ingresar.begin();
+        for (its = ingresar.begin(); its != ingresar.end(); its++)
+        {
+            cout << "\nentre " << *its << "\n";
+
+            if (count < tam)
+            {
+                MyReadFile << *its << " ";
+                count2++;
+            }
+            if (count >= tam)
+            {
+
+                MyReadFile << *its << "\t";
+            }
+            count++;
+
+            if (count2 == tam)
+            {
+                file << "\n";
+                count2 = 0;
+                id++;
+            }
+            if (x == id)
+                break;
+
+            count++;
+            count2++;
+        }
+    }
+
+
+    
+}
+
+
+    /*it = lista.begin();
+    advance(it, 2);
+    list<string>::iterator findIter = find(temporal.begin(), temporal.end(), *it);
+    */
+
+
 void commands(list<string> x)
 {
 
@@ -292,11 +394,11 @@ void commands(list<string> x)
     if (C2 == (x.front()))
     {
         insertar();
-        cout << "insert\n";
+        //cout << "insert\n";
     }
-    if (C3.compare(x.front()) == 0)
+    if (C3 == (x.front()))
     {
-        //create();
+        elim();
         cout << "del\n";
     }
     if (C4.compare(x.front()) == 0)
@@ -309,7 +411,7 @@ void commands(list<string> x)
         //create();
         cout << "mod\n";
     }
-    else { cout << "SYNTAX_ERROR: COMAND NOT FOUND"; }
+    //else { cout << "SYNTAX_ERROR: COMAND NOT FOUND"; }
 
 
 }
@@ -347,8 +449,14 @@ int main()
         for (itrs = datos.begin(); itrs != datos.end(); itrs++)
             cout << *itrs << "\n";
         */
+
+
+        //**********************************************limpio memoria******************************
         lista.clear();
         type.clear();
+        temporal.clear();
+        ingresar.clear();
+        datos.clear();
         //system("cls");
 
 
@@ -356,3 +464,5 @@ int main()
     }
 
 }
+
+
