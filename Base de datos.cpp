@@ -8,14 +8,12 @@
 #include <algorithm>
 
 
-
-
 using namespace std;
 
 string C1 = "CREAR_TABLA";
 string C2 = "INSERTAR";
 string C4 = "SELECT_*_DESDE";
-string C3 = "BORRAR";
+string C3 = "BORRAR_DESDE_ID";
 string C5 = "MODIFICAR";
 
 string tipo1 = "int";
@@ -32,7 +30,7 @@ list<string> type;
 list<string> datos;
 list<string> ingresar;
 list<string> temporal;
-
+int verificador = 1;
 
 void removespaceWord(string str)
 {
@@ -70,17 +68,16 @@ bool fileExists()
 
 
 
-void create()
+void create(int temp)
 {
 
-    bool temp = 0;
     string prueba;
     list<string> ::iterator it = lista.begin();
     list<string> ::iterator its = type.begin();
     advance(it, 1);
 
-
-    temp = fileExists(); //verifica si ya existe es nombre
+    if(temp==0)
+        temp = fileExists(); //verifica si ya existe es nombre
 
     if (temp == 0)
         cout << "YA EXISTE TABLA " << *it << "\n\n";
@@ -91,7 +88,7 @@ void create()
         prueba = *it + ".txt";
         ofstream MyReadFile(prueba.c_str());
 
-        cout << "\n\nLA TABLA " << prueba << " SE CREO EXISTOSAMENTE\n\n";
+        cout << "\n\nLA TABLA " << prueba << " SE GENERO EXISTOSAMENTE\n\n";
 
 
 
@@ -164,15 +161,6 @@ void pull_data()
 
     }
 
-
-
-    /*
-    list<string> ::iterator itrs;
-    for (itrs = datos.begin(); itrs != datos.end(); itrs++)
-        cout << *itrs << "\n";
-      */
-
-
 }
 
 template <typename T>
@@ -214,7 +202,7 @@ void insertar()
 
     list<string> ::iterator it = lista.begin();
 
-
+    
     temp = fileExists(); //verifica si ya existe es nombre
     list<string> ::iterator dat = datos.begin();
     if (temp == 0)
@@ -226,7 +214,7 @@ void insertar()
         //**********************************casteo los numero sino solo ingreso los string a una nueva lista*******************
         int temp = 2;
         int temp2 = 1;
-        while (temp < lista.size() - 1)
+        while (temp < lista.size()-verificador)
         {
             list<string> ::iterator it = lista.begin();
             list<string> ::iterator dat = datos.begin();
@@ -249,22 +237,22 @@ void insertar()
             temp++;
             temp2 += 2;
             list<string>::iterator itrs;
-            cout << "lista de ingresar\n";
+            /*cout << "lista de ingresar\n";
             for (itrs = ingresar.begin(); itrs != ingresar.end(); itrs++)
-                cout << *itrs << "\n";
+                cout << *itrs << "\n";*/
         }
         //**************************************ingrese los nuevos valores a la lista ingresar************************
         //cout << "\nvoy a buscar las filas\n";
         filas = rows();
 
-
+        
         //*************************************ingresar los datos a la tabla******************************************
         list<string> ::iterator it = lista.begin();
         list<string> ::iterator itrs = temporal.begin();
-        cout << "lista de temporal\n";
+       /* cout << "lista de temporal\n";
         for (itrs = temporal.begin(); itrs != temporal.end(); itrs++)
             cout << *itrs << "\n";
-
+            */
 
         advance(it, 1);
         prueba = *it + ".txt";
@@ -281,7 +269,7 @@ void insertar()
             count++;
         }
         //**********************************respeta la lo escrito*****************************************************
-
+        ingresar.clear();
 
     }
 }
@@ -289,7 +277,8 @@ void insertar()
 void elim()
 {
     fstream file;
-    string word, t, q, filename;
+    string word, t, q, filename,xx;
+    int comand = 0;
     list<string> ::iterator it = lista.begin();
     advance(it, 1);
 
@@ -297,90 +286,150 @@ void elim()
     q = filename;
     file.open(filename.c_str());
 
-    //extrae las palabras
-    /*while (file >> word)
-    {
-        // displaying content
-        ingresar.push_back(word);
-    }*/
-    //****************Saco el id y la palabra**********
     it = lista.begin();
     advance(it, 2);
     string ID = *it;
+    //************************************paso de lista a temporal**************************
+    for (it = lista.begin(); it != lista.end(); it++)
+        temporal.push_back(*it);
+    lista.clear();
 
-    //*******************test**************
-    list<string>::iterator itrs;
-    cout << "TEST\n";
-    for (itrs = ingresar.begin(); itrs != ingresar.end(); itrs++)
-        cout << *itrs << "\n";
-    //*******************End of test************
+    while (file >> word)
+        xx += word+" ";
+    
+
+    //***************************************recreo el txt****************
+    removespaceWord(xx);
+
+    for (it = lista.begin(); it != lista.end(); it++)
+        ingresar.push_back(*it);
+    lista.clear();
+
+    char c1 = 'int';
+    char c2 = 'char';
+    char c3 = 'date';
+    for (int i = 0; i < xx.length(); i++)
+    {
+        
+        if (xx[i] == c1 || xx[i] == c2 || xx[i] == c3)
+            comand++;       
+    }
+    comand = comand * 2;
+
+    int c = 0;
+    while (c < comand)
+    {
+        it = ingresar.begin();
+        advance(it, c);
+        lista.push_back(*it);
+        c++;
+    }
+    list<string> ::iterator tempo = temporal.begin();
+    advance(tempo, 1);
+    lista.push_front(*tempo);
+    tempo = temporal.begin();
+    lista.push_front(*tempo);
+    
+    tipos();
+    create(1);
+
+    //************************se creo el remplazo   PASO 1 TERMINADO**************
+    /*
+    //**************************TEST*****************************************
+    cout << "\nTEST lista\n";
+    for (it = lista.begin(); it != lista.end(); it++)
+        cout << *it << "\n";
+    list<string> ::iterator tip = type.begin();
+    cout << "\nTEST type\n";
+    for (tip = type.begin(); tip != type.end(); tip++)
+        cout << *tip << "\n";
+
+    tempo = temporal.begin();
+    cout << "\nTEST temporl\n";
+
+    for (tempo = temporal.begin(); tempo != temporal.end(); tempo++)
+        cout << *tempo << "\n";
+
+    list<string> ::iterator dat = temporal.begin();
+    cout << "\nTEST datos\n";
+    for (dat = datos.begin(); dat != datos.end(); dat++)
+        cout << *dat << "\n";
+
+    list<string> ::iterator ing = ingresar.begin();
+    cout << "\nTEST ingresar\n";
+    for (ing = ingresar.begin(); ing != ingresar.end(); ing++)
+        cout << *ing << "\n";
+
+    cout << "\n\nPaso 1 completo...\n\n";
+    //***************************-------------------*****************
+    */
 
 
-
-
-    //*******************convierto id ingresado a int*********
+    lista.clear();
+    
     stringstream geek(ID);
     int x = 0;
     geek >> x;
 
-
-
-
-    if (x == 0)
+    list<string> ::iterator ing = ingresar.begin();
+    int comand2 = comand;
+    int tem = 0;
+    ing = ingresar.begin();
+    advance(ing, comand-1);
+    while (tem < ((comand2 / 2) * x ))
     {
-        std::ofstream ofs;
-        ofs.open(filename, std::ofstream::out | std::ofstream::trunc);
-        ofs.close();
+        advance(ing, 1);
+        lista.push_back(*ing);
+        
+        tem++;
     }
-    if (x > 0)
-    {
-        ofstream MyReadFile(filename.c_str());
-        int tam = ingresar.size() - 1;
-        tam = tam / 2;
-        int tamf = tam / 2;
-        int count = 0, count2 = 0, id = 0;
-
-
-        list<string> ::iterator its = ingresar.begin();
-        for (its = ingresar.begin(); its != ingresar.end(); its++)
-        {
-            cout << "\nentre " << *its << "\n";
-
-            if (count < tam)
-            {
-                MyReadFile << *its << " ";
-                count2++;
-            }
-            if (count >= tam)
-            {
-
-                MyReadFile << *its << "\t";
-            }
-            count++;
-
-            if (count2 == tam)
-            {
-                file << "\n";
-                count2 = 0;
-                id++;
-            }
-            if (x == id)
-                break;
-
-            count++;
-            count2++;
-        }
-    }
-
-
+    tempo = temporal.begin();
+    advance(tempo, 1);
+    lista.push_front(*tempo);
+    tempo = temporal.begin();
+    lista.push_front(*tempo);
     
+    for (it = lista.begin(); it != lista.end(); it++)
+        cout << *it << "\n";
+
+    datos.clear();
+    temporal.clear();
+    ingresar.clear();
+    type.clear();
+
+    tem = 0;
+    int tem2 = 2;
+    int counter = 0;
+    type = lista;
+    it = lista.begin();
+    string comando = *it;
+    advance(it, 1);
+    string name = *it;
+    lista.clear();
+    
+    verificador = 0;
+    while (tem2 < type.size())
+    {
+        list<string> ::iterator t = type.begin();
+        if (tem == (comand2 / 2))
+        {
+            lista.push_front(name);
+            lista.push_front(comando);
+            insertar();
+            lista.clear();
+            tem = 0;
+
+        }
+        advance(t, tem2);
+        lista.push_back(*t);
+        tem++;
+        tem2++;
+    }
+   
+    verificador = 1;
+   
 }
 
-
-    /*it = lista.begin();
-    advance(it, 2);
-    list<string>::iterator findIter = find(temporal.begin(), temporal.end(), *it);
-    */
 
 
 void commands(list<string> x)
@@ -388,7 +437,7 @@ void commands(list<string> x)
 
     if (C1 == (x.front()))
     {
-        create();
+        create(0);
         //cout << "crea\n";
     }
     if (C2 == (x.front()))
@@ -458,8 +507,6 @@ int main()
         ingresar.clear();
         datos.clear();
         //system("cls");
-
-
 
     }
 
