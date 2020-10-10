@@ -5,6 +5,7 @@
 #include <list>
 #include <sstream>
 #include <stdlib.h>
+#include<stdio.h> 
 #include <algorithm>
 
 
@@ -15,6 +16,7 @@ string C2 = "INSERTAR";
 string C4 = "SELECT_*_DESDE";
 string C3 = "BORRAR_DESDE_ID";
 string C5 = "MODIFICAR";
+string C6 = "BORRAR_TABLA";
 
 string tipo1 = "int";
 string tipo2 = "char";
@@ -136,8 +138,6 @@ void tipos()
         }
 
     }
-    if (flag == 0)
-        cout << "SYNTAX_ERROR: COMAND NOT FOUND";
     for (itrr = temp.begin(); itrr != temp.end(); itrr++)
         lista.remove(*itrr);
     temp.clear();
@@ -430,6 +430,91 @@ void elim()
    
 }
 
+void eliminarTab()
+{
+    int temp = 0;
+    list<string>::iterator it = lista.begin();
+    advance(it, 1);
+    string name = *it+".txt";
+    if (remove(name.c_str()) != 0)
+        cout << "\nTABLA FUE ELIMINADA CON EXITO\n" << endl;
+    else
+        cout << name << "\nTABLA NO EXISTE O NO FUE ENCONTRADA\n" << endl;
+    
+}
+
+void select()
+{
+    fstream file;
+    string word, t, q, filename, xx;
+    int comand = 0;
+    list<string> ::iterator it = lista.begin();
+    advance(it, 1);
+
+    filename = *it + ".txt";
+    q = filename;
+    file.open(filename.c_str());
+
+    it = lista.begin();
+    advance(it, 2);
+    string ID = *it;
+
+    stringstream geek(ID);
+    int x = 0;
+    geek >> x;
+
+    //************************************paso de lista a temporal**************************
+    for (it = lista.begin(); it != lista.end(); it++)
+        temporal.push_back(*it);
+    lista.clear();
+
+    while (file >> word)
+        xx += word + " ";
+
+
+    //***************************************recreo el txt****************
+    removespaceWord(xx);
+
+    for (it = lista.begin(); it != lista.end(); it++)
+        ingresar.push_back(*it);
+    lista.clear();
+
+    char c1 = 'int';
+    char c2 = 'char';
+    char c3 = 'date';
+    for (int i = 0; i < xx.length(); i++)
+    {
+
+        if (xx[i] == c1 || xx[i] == c2 || xx[i] == c3)
+            comand++;
+    }
+    //********************************comand es el tam de la primera fila, tam es de las otras filas 
+    comand = comand * 2;
+    int tam = comand/2;
+    int salto = (tam * (x-1)) + comand;
+    while (salto < ingresar.size())
+    {
+        list<string>::iterator ing = ingresar.begin();
+        advance(ing, salto);
+        lista.push_back(*ing);
+        salto++;
+
+    }
+    list<string>::iterator ing = lista.begin();
+    for (ing = lista.begin(), tam = 0; ing != lista.end(); tam++, ing++)
+    {
+        if (tam == comand / 2)
+        {
+            cout << endl;
+            tam = 0;
+        }
+            
+        cout << *ing << "\t";
+    }
+    cout << endl;
+
+}
+
 
 
 void commands(list<string> x)
@@ -452,13 +537,22 @@ void commands(list<string> x)
     }
     if (C4.compare(x.front()) == 0)
     {
-        //create();
+        select();
         cout << "select\n";
     }
     if (C5.compare(x.front()) == 0)
     {
         //create();
         cout << "mod\n";
+    }
+    if (C5.compare(x.front()) == 0)
+    {
+        //create();
+        cout << "mod\n";
+    }
+    if (C6 == (x.front()))
+    {
+        eliminarTab();
     }
     //else { cout << "SYNTAX_ERROR: COMAND NOT FOUND"; }
 
