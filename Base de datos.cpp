@@ -479,43 +479,69 @@ void select()
         ingresar.push_back(*it);
     lista.clear();
 
-    char c1 = 'int';
-    char c2 = 'char';
-    char c3 = 'date';
-    for (int i = 0; i < xx.length(); i++)
-    {
 
-        if (xx[i] == c1 || xx[i] == c2 || xx[i] == c3)
-            comand++;
+    size_t pos = xx.find("int", 0);
+    while (pos != string::npos)
+    {
+        comand++;
+        pos = xx.find("int", pos + 1);
     }
+    pos = xx.find("char", 0);
+    while (pos != string::npos)
+    {
+        comand++;
+        pos = xx.find("char", pos + 1);
+    }
+    pos = xx.find("date", 0);
+    while (pos != string::npos)
+    {
+        comand++;
+        pos = xx.find("date", pos + 1);
+    }
+
+
+
+    cout << comand<<"\n";
     //********************************comand es el tam de la primera fila, tam es de las otras filas 
     comand = comand * 2;
-    int tam = comand/2;
-    int salto = (tam * (x-1)) + comand;
-    while (salto < ingresar.size())
-    {
-        list<string>::iterator ing = ingresar.begin();
-        advance(ing, salto);
-        lista.push_back(*ing);
-        salto++;
+    int tam = comand / 2;
+    int salto = (tam * (x -1)) + comand;
 
-    }
-    list<string>::iterator ing = lista.begin();
-    for (ing = lista.begin(), tam = 0; ing != lista.end(); tam++, ing++)
-    {
-        if (tam == comand / 2)
+        while (salto < ingresar.size())
         {
-            cout << endl;
-            tam = 0;
+            list<string>::iterator ing = ingresar.begin();
+            advance(ing, salto);
+            lista.push_back(*ing);
+            salto++;
+
         }
-            
-        cout << *ing << "\t";
-    }
-    cout << endl;
+        list<string>::iterator ing = lista.begin();
+        for (ing = lista.begin(), tam = 0; ing != lista.end(); tam++, ing++)
+            cout << *ing << "\n";
+       ing = lista.begin();
+        for (ing = lista.begin(),tam=0; ing != lista.end(); tam++, ing++)
+        {
+            if (tam == comand / 2)
+            {
+                cout << endl;
+                tam = 0;
+            }
+
+            cout << *ing << "\t";
+        }
+        cout << endl;
+    
+    
+    
+    
 
 }
 
 
+void modificar()
+{
+
+}
 
 void commands(list<string> x)
 {
@@ -537,17 +563,31 @@ void commands(list<string> x)
     }
     if (C4.compare(x.front()) == 0)
     {
+        list<string>::iterator it = lista.begin();
+        for (it = lista.begin(); it != lista.end(); it++)
+            temporal.push_back(*it);
+        
+        lista.clear();
+        int counter = 0;
+        list<string>::iterator temp = temporal.begin();
+        advance(temp, 1);
+        string name = *temp;
+        advance(temp, 2);
+        string id = *temp;
+        temp = temporal.begin();
+        lista.push_back(*temp);
+        lista.push_back(name);
+        lista.push_back(id);
+     
+        temporal.clear();
         select();
         cout << "select\n";
     }
+
     if (C5.compare(x.front()) == 0)
     {
-        //create();
-        cout << "mod\n";
-    }
-    if (C5.compare(x.front()) == 0)
-    {
-        //create();
+        list<string>::iterator it = lista.begin();
+
         cout << "mod\n";
     }
     if (C6 == (x.front()))
