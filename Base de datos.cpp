@@ -540,6 +540,80 @@ void select()
 
 void modificar()
 {
+    fstream file;
+    string word, t, q, filename, xx;
+    int comand = 0;
+    list<string> ::iterator it = lista.begin();
+    advance(it, 1);
+
+    filename = *it + ".txt";
+    q = filename;
+    file.open(filename.c_str());
+
+    it = lista.begin();
+    advance(it, 2);
+    string fila = *it;
+    it = lista.begin();
+    advance(it, 3);
+    string dato = *it;
+    it = lista.begin();
+    advance(it, 4);
+    string ID = *it;
+
+    //************************************paso de lista a temporal**************************
+    for (it = lista.begin(); it != lista.end(); it++)
+        temporal.push_back(*it);
+    list<string>::iterator itrs=temporal.begin();
+    cout << "lista de temporal\n";
+    for (itrs = temporal.begin(); itrs != temporal.end(); itrs++)
+        cout << *itrs << "\n";
+
+    lista.clear();
+
+    while (file >> word)
+        xx += word + " ";
+
+    //***************************************recreo el txt****************
+    removespaceWord(xx);
+
+    for (it = lista.begin(); it != lista.end(); it++)
+        ingresar.push_back(*it);
+
+    itrs = ingresar.begin();
+    cout << "lista de ingresar\n";
+    for (itrs = ingresar.begin(); itrs != ingresar.end(); itrs++)
+        cout << *itrs << "\n";
+    lista.clear();
+
+    char c1 = 'int';
+    char c2 = 'char';
+    char c3 = 'date';
+    for (int i = 0; i < xx.length(); i++)
+    {
+
+        if (xx[i] == c1 || xx[i] == c2 || xx[i] == c3)
+            comand++;
+    }
+    comand = comand * 2;
+
+    int c = 0;
+    while (c < comand)
+    {
+        it = ingresar.begin();
+        advance(it, c);
+        lista.push_back(*it);
+        c++;
+    }
+    list<string> ::iterator tempo = temporal.begin();
+    advance(tempo, 1);
+    lista.push_front(*tempo);
+    tempo = temporal.begin();
+    lista.push_front(*tempo);
+
+    tipos();
+    create(1);
+
+
 
 }
 
@@ -559,7 +633,6 @@ void commands(list<string> x)
     if (C3 == (x.front()))
     {
         elim();
-        cout << "del\n";
     }
     if (C4.compare(x.front()) == 0)
     {
@@ -581,13 +654,29 @@ void commands(list<string> x)
      
         temporal.clear();
         select();
-        cout << "select\n";
     }
 
-    if (C5.compare(x.front()) == 0)
+    if (C5 == (x.front()))
     {
         list<string>::iterator it = lista.begin();
+        string comand = *it;
+        advance(it, 1);
+        string name = *it;
+        advance(it, 2);
+        string fila = *it;
+        advance(it, 2);
+        string dato = *it;
+        advance(it,4);
+        string id = *it;
+        lista.clear();
+        lista.push_back(comand);
+        lista.push_back(name);
+        lista.push_back(fila);
+        lista.push_back(dato);
+        lista.push_back(id);
 
+
+        modificar();
         cout << "mod\n";
     }
     if (C6 == (x.front()))
