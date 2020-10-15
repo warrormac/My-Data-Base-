@@ -543,9 +543,11 @@ void modificar()
     fstream file;
     string word, t, q, filename, xx;
     int comand = 0;
+    
     list<string> ::iterator it = lista.begin();
+    string command = *it;
     advance(it, 1);
-
+    string name = *it;
     filename = *it + ".txt";
     q = filename;
     file.open(filename.c_str());
@@ -556,10 +558,14 @@ void modificar()
     it = lista.begin();
     advance(it, 3);
     string dato = *it;
+    MOD.push_back(dato);
     it = lista.begin();
     advance(it, 4);
     string ID = *it;
 
+    stringstream geek(ID);
+    int x = 0;
+    geek >> x;
     //************************************paso de lista a temporal**************************
     for (it = lista.begin(); it != lista.end(); it++)
         temporal.push_back(*it);
@@ -580,41 +586,129 @@ void modificar()
         ingresar.push_back(*it);
 
     itrs = ingresar.begin();
-    cout << "lista de ingresar\n";
-    for (itrs = ingresar.begin(); itrs != ingresar.end(); itrs++)
-        cout << *itrs << "\n";
     lista.clear();
 
-    char c1 = 'int';
-    char c2 = 'char';
-    char c3 = 'date';
-    for (int i = 0; i < xx.length(); i++)
+    //******************************************saco el tama;o de la fila************************
+    size_t pos = xx.find("int", 0);
+    while (pos != string::npos)
     {
-
-        if (xx[i] == c1 || xx[i] == c2 || xx[i] == c3)
-            comand++;
+        comand++;
+        pos = xx.find("int", pos + 1);
     }
+    pos = xx.find("char", 0);
+    while (pos != string::npos)
+    {
+        comand++;
+        pos = xx.find("char", pos + 1);
+    }
+    pos = xx.find("date", 0);
+    while (pos != string::npos)
+    {
+        comand++;
+        pos = xx.find("date", pos + 1);
+    }
+    
+    //**************************************************************************************************
+
+    int i = 0;
     comand = comand * 2;
-
-    int c = 0;
-    while (c < comand)
+    int tam = comand / 2;
+    int salto = (tam * (x -1)) + comand;
+    
+   
+    i = salto;
+    it = ingresar.begin();
+    //******************************identifico que elemnto es y en que fila********************************
+    advance(it, salto);
+    while (i < ingresar.size())
     {
-        it = ingresar.begin();
-        advance(it, c);
-        lista.push_back(*it);
-        c++;
-    }
-    list<string> ::iterator tempo = temporal.begin();
-    advance(tempo, 1);
-    lista.push_front(*tempo);
-    tempo = temporal.begin();
-    lista.push_front(*tempo);
+        
 
+        std::string& s(*it);
+        if (s == fila)
+        {
+            s = dato;
+            break;
+        }
+            
+        advance(it, 1);
+        i++;
+        
+    }
+    //*************************************************************************************************
+
+
+
+
+
+
+    lista.clear();
+
+    it = ingresar.begin();
+    i = 0;
+    
+    while (i < comand) 
+    {       
+        lista.push_back(*it);
+        advance(it, 1);
+        i++;
+    }
+            
+    lista.push_front(name);
+    lista.push_front(command);
+
+       
     tipos();
     create(1);
+    //**********************************************************se creo la tabla de remplazo****************
+    datos.clear();
+    temporal.clear();
+    type.clear();
+
+    int tem = 0;
+    int tem2 = 0;
+    int counter = 0;
+    
+    i = comand;
+    it = ingresar.begin();
+    advance(it, comand);
+    while (i < ingresar.size())
+    {
+        type.push_back(*it);
+        advance(it, 1);
+        
+        i++;
+    }
+    ingresar.clear();
+    lista.clear();
 
 
+    //***************************************************inserto los elemnto saltando la primera fila************************************
+    verificador = 0;
+    while (tem2 < type.size())
+    {
+        list<string> ::iterator t = type.begin();
+        if (tem == (comand / 2))
+        {
+            lista.push_front(name);
+            lista.push_front(command);
+            insertar();
+            lista.clear();
+            tem = 0;
 
+        }
+        advance(t, tem2);
+        lista.push_back(*t);
+        tem++;
+        tem2++;
+    }
+
+    verificador = 1;
+    
+    //**************************************************************************************************************************************
+    
+    
+    
 }
 
 void commands(list<string> x)
