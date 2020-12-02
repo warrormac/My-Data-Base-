@@ -131,10 +131,11 @@ int main()
 
 bool verify(string index)
 {
-    ifstream file(index.data(), ios_base::in );
-    if (!file)
-        return 1; //no existe
-    return 0;//si existe
+     
+    ifstream open(index.data());
+    if (open.fail())
+        return 0; //no existe
+    return 1;//si existe
 }
 
 void append(string name,string data)
@@ -152,7 +153,7 @@ void append(string name,string data)
 
 void write(string name,string data,int ver)
 {
-    name = name + ".txt";
+ 
     ofstream ofs(name.data());
 
     
@@ -160,7 +161,7 @@ void write(string name,string data,int ver)
     if (ver == 1)
     {
         string name2 = name.data();
-        append(name, data);
+        append(name2, data);
         string index = "index.txt";
         append(index, name);
     }
@@ -177,13 +178,14 @@ void identifier()
     string name,data;
     cout << "ingresa nombre de tabla: ";
     cin >> name;
+    name = name + ".txt";
     cout << "ingresa data: ";
     cin >> data;
     bool pre = 0;
     pre = verify(name);
 
     ///////////////////////replace
-    if (pre == 1)
+    if (pre == 0)
     {
         write(name, data, 1);
         cout << "writing \n\n";
@@ -196,12 +198,12 @@ void identifier()
 
 int main()
 {
-    string index = "index";
-    bool pre = 0;
+    string index = "index.txt";
+    bool pre = 3;
 
     pre= verify(index);
 
-    if (pre == 1)
+    if (pre == 0)
         write(index," ",0);
  
     while (true)
@@ -212,3 +214,4 @@ int main()
     
 
 }
+
