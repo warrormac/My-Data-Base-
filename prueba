@@ -5,129 +5,43 @@
 #include <algorithm>
 #include <sstream>
 #include <string>
+#include <algorithm>
+#include <list>
+
 #pragma warning(disable : 4996)
 
 using namespace std;
 
+list<string> comand;
 
-/*
-void add(char* data, FILE* filePointer)
+string C1 = "CREAR_TABLA";
+string C2 = "INSERTAR";
+string C4 = "SELECT_*_DESDE";
+string C3 = "BORRAR_DESDE_ID";
+string C5 = "MODIFICAR";
+string C6 = "BORRAR_TABLA";
+
+
+void removespaceWord(string str)
 {
-    filePointer = fopen("index.txt", "a+");
-    if (filePointer == NULL)
-        printf("GfgTest.txt file failed to open.");
-
-    else
+    //elimina la ", ) (" y lo convierte en " "
+    for (int i = 0; i < str.length(); i++)
     {
-        printf("The file is now opened.\n");
-        if (strlen(data) > 0)
-        {
-            fputs(data, filePointer);
-            fputs("\n", filePointer);
-        }
-
-        fclose(filePointer);
-        printf("Data successfully written in file GfgTest.c\n");
-        printf("The file is now closed.");
+        if (str[i] == ',' || str[i] == '(' || str[i] == ')' || str[i] == '-')
+            str[i] = ' ';
     }
-}
 
-void write(char *data, FILE* filePointer, string name, int valid)
-{
-    filePointer = fopen(name.data(), "w");
-    cout <<name << "\n\n\n";
-    if (filePointer == NULL)
-        printf("GfgTest.txt file failed to open.");
- 
-    else
+    istringstream ss(str);
+    //ingreso el comando a la lista
+    while (ss)
     {
-        printf("The file is now opened.\n");
-        if (strlen(data) > 0)
-        {
-            fputs(data, filePointer);
-            fputs("\n", filePointer);
-        }
-
-        fclose(filePointer);
-        printf("Data successfully written in file GfgTest.c\n");
-        printf("The file is now closed.");
-    }
-    if (valid == 1)
-    {
-        char dataW[50] ;
-        add(dataW, filePointer);
+        string word;
+        ss >> word;
+        comand.push_back(word);
     }
 }
 
 
-
-
-void read(char *dataR, FILE* filePointer )
-{
-    filePointer = fopen("GfgTest.txt", "r");
-   
-    if (filePointer == NULL)
-        printf("GfgTest.txt file failed to open.");
-    
-    else
-    {
-
-        printf("The file is now opened.\n");
-
-        while (fgets(dataR, 50, filePointer) != NULL)
-              printf("%s", dataR);
-        
-
-        fclose(filePointer);
-
-        printf("Data successfully read from file GfgTest.c\n");
-        printf("The file is now closed.");
-    }
-}
-
-bool fileExists()
-{
-    string temp;
-    temp = "index.txt";
-
-    ifstream file(temp.c_str(), ios_base::out | ios_base::in);
-    if (!file)
-        return 0;
-    return 1;
-
-}
-
-
-
-int main()
-{
-    FILE* filePointer = NULL;
-    string indice="index.txt";
-    
-
-    char data[50]="";
-    char dataR[50];
-
-    bool index = fileExists();
-    if (index == 0)
-    {
-        write(data, filePointer, indice,0);
-    }
-
-    string name;
-    cout << "ingresa el numbre de la tabla:";
-    cin >> name;
-    name= name + ".txt";
-
-
-    
-    char dataW[50]= "111111111";
-    write(dataW, filePointer, name,1);
-    //add(dataW, filePointer);
-    //read(dataR, filePointer);
-        
-}
-*/
 
 bool verify(string index)
 {
@@ -146,18 +60,14 @@ void append(string name,string data)
         fs.open(name.data(), std::ios_base::app);
         fs <<data.data()<<"\n";
         fs.close();
-    
-
-
+   
 }
 
 void write(string name,string data,int ver)
 {
  
     ofstream ofs(name.data());
-
-    
-
+  
     if (ver == 1)
     {
         string name2 = name.data();
@@ -168,32 +78,104 @@ void write(string name,string data,int ver)
     
 }
 
-void valid()
-{
-
-}
 
 void identifier()
 {
-    string name,data;
-    cout << "ingresa nombre de tabla: ";
-    cin >> name;
-    name = name + ".txt";
-    cout << "ingresa data: ";
-    cin >> data;
-    bool pre = 0;
-    pre = verify(name);
+   
 
-    ///////////////////////replace
-    if (pre == 0)
+    if (C1 == comand.front())
     {
-        write(name, data, 1);
-        cout << "writing \n\n";
-    } 
-    
-    else
-        append(name,data);
-    //////////////////////////////////
+        list<string> ::iterator t = comand.begin();
+        advance(t, 1);
+        string name=*t;
+        name = name + ".txt";
+       
+
+        bool pre = 0;
+        pre = verify(name);
+
+
+        if (pre == 0)
+        {
+            write(name, "", 1);
+            cout << "creating \n\n";
+        }
+
+        else
+            cout << "tabla ya existe!\n";
+    }
+    if (C2 == comand.front())
+    {
+        list<string> ::iterator t = comand.begin();
+        advance(t, 1);
+        string name = *t;
+        name = name + ".txt";
+
+        string valores;
+        cout << "ingresa data: ";
+        getline(cin, valores);
+
+        bool pre = 0;
+        pre = verify(name);
+
+        append(name, valores);
+    }
+    /*if (C3 == (x.front()))
+    {
+        elim();
+    }
+    if (C4.compare(x.front()) == 0)
+    {
+        list<string>::iterator it = lista.begin();
+        for (it = lista.begin(); it != lista.end(); it++)
+            temporal.push_back(*it);
+
+        lista.clear();
+        int counter = 0;
+        list<string>::iterator temp = temporal.begin();
+        advance(temp, 1);
+        string name = *temp;
+        advance(temp, 2);
+        string id = *temp;
+        temp = temporal.begin();
+        lista.push_back(*temp);
+        lista.push_back(name);
+        lista.push_back(id);
+
+        temporal.clear();
+        select();
+    }
+
+    if (C5 == (x.front()))
+    {
+        list<string>::iterator it = lista.begin();
+        string comand = *it;
+        advance(it, 1);
+        string name = *it;
+        advance(it, 2);
+        string fila = *it;
+        advance(it, 2);
+        string dato = *it;
+        advance(it, 4);
+        string id = *it;
+        lista.clear();
+        lista.push_back(comand);
+        lista.push_back(name);
+        lista.push_back(fila);
+        lista.push_back(dato);
+        lista.push_back(id);
+
+
+        modificar();
+        cout << "mod\n";
+    }
+    if (C6 == (x.front()))
+    {
+        eliminarTab();
+    }
+    //else { cout << "SYNTAX_ERROR: COMAND NOT FOUND"; }
+    */
+
 }
 
 int main()
@@ -206,12 +188,46 @@ int main()
     if (pre == 0)
         write(index," ",0);
  
+    string coamndo;
+
     while (true)
     {
+        cout << "ingrese comando: ";
+        getline(cin, coamndo);
+        removespaceWord(coamndo);
+
         identifier();
+        comand.clear();
     }
     
-    
-
 }
 
+
+
+/*
+int main(int argc, char* argv[])
+{
+
+    FILE* archivo;
+    archivo = fopen("texto.txt", "r");
+    char linea[300];
+    int total = 0;
+    int cont = 0;
+    int opcion = 0;
+    while (fgets(linea, sizeof(linea), archivo))
+    {
+        cout << "Columna deseas imprimir , escribe el numero :" << endl;
+        cin >> opcion;
+        cont++;
+        if (opcion == cont)
+            cout << linea;
+
+    }
+
+
+    fclose(archivo);
+
+    system("PAUSE");
+    return 0;
+}
+*/
