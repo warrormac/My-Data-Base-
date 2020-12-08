@@ -17,6 +17,7 @@ string C4 = "SELECT_*_DESDE";
 string C3 = "BORRAR_DESDE_ID";
 string C5 = "MODIFICAR";
 string C6 = "BORRAR_TABLA";
+string C7 = "CREAR_TABLA_RAN"; 
 
 string tipo1 = "int";
 string tipo2 = "char";
@@ -69,6 +70,32 @@ bool fileExists()
 }
 
 
+void append(string name, string data)
+{
+
+    std::fstream fs;
+
+    fs.open(name.data(), std::ios_base::app);
+    fs << data.data() << "\n";
+    fs.close();
+
+}
+
+void write(string name, string data, int ver)
+{
+
+    ofstream ofs(name.data());
+
+    if (ver == 1)
+    {
+        string name2 = name.data();
+        append(name2, data);
+        string index = "index.txt";
+        append(index, name);
+    }
+
+}
+
 
 void create(int temp)
 {
@@ -77,7 +104,7 @@ void create(int temp)
     list<string> ::iterator it = lista.begin();
     list<string> ::iterator its = type.begin();
     advance(it, 1);
-
+    string name = *it;
     if (temp == 0)
         temp = fileExists(); //verifica si ya existe es nombre
 
@@ -104,6 +131,9 @@ void create(int temp)
             advance(it, 1);
             MyReadFile << *it + " (" + *its + ")" << "\t";
         }
+
+        string index = "index.txt";
+        append(index, name);
 
         // Close the file
         MyReadFile.close();
@@ -255,6 +285,7 @@ void insertar()
              */
 
         advance(it, 1);
+        string name = *it;
         prueba = *it + ".txt";
         ofstream MyReadFile;
         MyReadFile.open(prueba, std::ios_base::app); // append instead of overwrite
@@ -268,6 +299,11 @@ void insertar()
             else MyReadFile << *it << "\t";
             count++;
         }
+
+
+        
+
+
         //**********************************respeta la lo escrito*****************************************************
         ingresar.clear();
 
@@ -351,23 +387,18 @@ void elim()
     cout << "\nTEST type\n";
     for (tip = type.begin(); tip != type.end(); tip++)
         cout << *tip << "\n";
-
     tempo = temporal.begin();
     cout << "\nTEST temporl\n";
-
     for (tempo = temporal.begin(); tempo != temporal.end(); tempo++)
         cout << *tempo << "\n";
-
     list<string> ::iterator dat = temporal.begin();
     cout << "\nTEST datos\n";
     for (dat = datos.begin(); dat != datos.end(); dat++)
         cout << *dat << "\n";
-
     list<string> ::iterator ing = ingresar.begin();
     cout << "\nTEST ingresar\n";
     for (ing = ingresar.begin(); ing != ingresar.end(); ing++)
         cout << *ing << "\n";
-
     cout << "\n\nPaso 1 completo...\n\n";
     //***************************-------------------*****************
     */
@@ -715,9 +746,19 @@ void modificar()
 
 
 }
+bool verify(string index)
+{
+
+    ifstream open(index.data());
+    if (open.fail())
+        return 0; //no existe
+    return 1;//si existe
+}
+
 
 void commands(list<string> x)
 {
+    
 
     if (C1 == (x.front()))
     {
@@ -782,10 +823,48 @@ void commands(list<string> x)
     {
         eliminarTab();
     }
+    if (C7 == (x.front()))
+    {
+        list<string>::iterator it = lista.begin();
+        advance(it, 1);
+        string name = *it;
+        advance(it, 1);
+        string size = *it;
+        stringstream geek(size);
+        int count = 0;
+        geek >> count;
+
+        name = name + ".txt";
+        cout << name << "\n\n\n";
+
+        
+        for (int i = 0; i <= count; i++) {
+            int contador = 0;
+            int num1, num2, num3;
+            num1 = 1 + rand() % (01 - 31);
+            num2 = 1 + rand() % (01 - 12);
+            num3 = 1 + rand() % (1 - 100);
+            
+            
+            string numero = "1";
+            string valores;
+            string co = to_string(i);
+            string s1 = to_string(num1);
+            string s2 = to_string(num2);
+            string s3 = to_string(num3);
+
+            valores = "nombre_" + co + "\tapellido_" + co + "\t" + s3 + "\t" + s1 + "/" + s2 + "/" + "2019";
+            bool pre = 0;
+            pre = verify(name);
+            append(name, valores);
+            contador++;
+        }
+    }
     //else { cout << "SYNTAX_ERROR: COMAND NOT FOUND"; }
 
 
 }
+
 
 
 
@@ -796,41 +875,41 @@ int main()
 
     while (true)
     {
-        cout << "ingrese comando: ";
 
-        //creo ingreso el texto *COMANDO*. se hace de esta forma para poder 
-        //usar espacios
-        getline(cin, x);
+        string index = "index.txt";
+        bool pre = 3;
 
-        //funcion que saca los espacios
-        removespaceWord(x);
-        tipos();
-        //cout << temp.front();
-        commands(lista);
+        pre = verify(index);
 
+        if(pre==0)
+            write(index, " ", 0);
 
-        //creo un iterador para poder imprimir la pablabra   **solo para probar (tester)**
+        else
+        {
+            cout << "ingrese comando: ";
 
-       /* list<string>::iterator itr;
-        list<string>::iterator itrs;
-        cout << "lista de lista\n";
-        for (itr = lista.begin(); itr != lista.end(); itr++)
-            cout << *itr << "\n";
-        cout << "lista de type\n";
-        for (itrs = datos.begin(); itrs != datos.end(); itrs++)
-            cout << *itrs << "\n";
-        */
+            //creo ingreso el texto *COMANDO*. se hace de esta forma para poder 
+            //usar espacios
+            getline(cin, x);
+
+            //funcion que saca los espacios
+            removespaceWord(x);
+            tipos();
+            //cout << temp.front();
+            commands(lista);
 
 
-        //**********************************************limpio memoria******************************
-        lista.clear();
-        type.clear();
-        temporal.clear();
-        ingresar.clear();
-        datos.clear();
-        //system("cls");
+
+            //**********************************************limpio memoria******************************
+            lista.clear();
+            type.clear();
+            temporal.clear();
+            ingresar.clear();
+            datos.clear();
+            //system("cls");
+        }
+        
 
     }
 
 }
-
