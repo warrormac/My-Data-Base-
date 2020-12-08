@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include<stdio.h> 
 #include <algorithm>
+#include <time.h>   
+#include <random>
 
 
 using namespace std;
@@ -755,7 +757,45 @@ bool verify(string index)
     return 1;//si existe
 }
 
+void variables()
+{
+    list<string>::iterator it = lista.begin();
+    advance(it, 3);
+    int i = 0;
+    
 
+    while (i < lista.size()-3)
+    {
+        if (i % 2 != 0 || i==0)
+            datos.push_back(*it);
+        advance(it, 1);
+        i++;
+    }
+    
+
+    
+
+}
+
+
+int random(int cap)
+{
+    // Random seed
+    int randomX;
+    random_device rd;
+
+    // Initialize Mersenne Twister pseudo-random number generator
+    mt19937 gen(rd());
+
+    // Generate pseudo-random numbers
+    // uniformly distributed in range (1, 100)
+    uniform_int_distribution<> dis(1, cap);
+
+    // Generate ten pseudo-random numbers
+    for (int i = 0; i < 5; i++)
+        randomX = dis(gen);
+    return randomX;
+}
 void commands(list<string> x)
 {
     
@@ -825,6 +865,7 @@ void commands(list<string> x)
     }
     if (C7 == (x.front()))
     {
+        
         list<string>::iterator it = lista.begin();
         advance(it, 1);
         string name = *it;
@@ -836,33 +877,69 @@ void commands(list<string> x)
 
         name = name + ".txt";
         cout << name << "\n\n\n";
+        variables();
+        tipos();
 
+        string valores;
+        int contador = 0;
+        int num1, num2, num3;
+        temporal = type;
+        list<string>::iterator ty = type.begin();
+        list<string>::iterator da = datos.begin();
+        list<string>::iterator te = temporal.begin();
+        int p = 0;
         
-        for (int i = 0; i <= count; i++) {
-            int contador = 0;
-            int num1, num2, num3;
-            num1 = 1 + rand() % (01 - 31);
-            num2 = 1 + rand() % (01 - 12);
-            num3 = 1 + rand() % (1 - 100);
+        for (int j=0;j<count;j++)
+        {
+            srand(time(NULL));
+            num1=random(31);
+            num2=random(12);
+            num3=random(99);
             
-            
-            string numero = "1";
-            string valores;
-            string co = to_string(i);
-            string s1 = to_string(num1);
-            string s2 = to_string(num2);
-            string s3 = to_string(num3);
+            while (p < type.size())
+            {
+                
+                if (*ty == tipo1)
+                {
+                    string s3 = to_string(num3);
+                    valores += s3 + "\t";
+                    cout << "existe in int";
+                }
+                if (*ty == tipo2)
+                {
+                    cout << j;
+                    string co = to_string(j);
+                    valores += *da + "_" + co + "\t";
+                    cout << "existe un char";
 
-            valores = "nombre_" + co + "\tapellido_" + co + "\t" + s3 + "\t" + s1 + "/" + s2 + "/" + "2019";
+                }
+                if (*ty == tipo3)
+                {
+                    string s1 = to_string(num1);
+                    string s2 = to_string(num2);
+                    valores += s1 + "/" + s2 + "/" + "2019\t";
+                    cout << "existe un date";
+                }
+                advance(ty, 1);
+                advance(da, 1);
+                p++;
+            }
+            da = datos.begin();
+            ty = type.begin();
+            p = 0;
             bool pre = 0;
             pre = verify(name);
             append(name, valores);
             contador++;
+            valores.clear();
+  
         }
+         
+       
     }
     //else { cout << "SYNTAX_ERROR: COMAND NOT FOUND"; }
 
-
+   
 }
 
 
