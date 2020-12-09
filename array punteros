@@ -1,0 +1,31 @@
+string *arr[70000];
+int main()
+{
+    ifstream in("fff.txt");
+    string temp;
+    string index = "index.txt";
+    vector<string> vect;
+    while (getline(in, temp))
+        vect.push_back(temp);
+
+    for (int i = 0; i != vect.size(); i++)
+    {
+        arr[i]=&(vect[i]);
+
+    }
+
+
+    for (int i = 0; i != vect.size(); i++)
+    {
+        cout<<arr[i]<<"\n";
+        
+        write(index, arr[i], 0);
+    }
+    for (int i = 0; i != vect.size(); i++)
+    {
+        cout << *(arr[i]) << "\n";
+
+    }
+    return 0;
+
+}
